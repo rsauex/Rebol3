@@ -1092,3 +1092,8 @@ zero?: native [
 	{Returns TRUE if the value is zero (for its datatype).}
 	value
 ]
+
+test-native: native [
+	{This is just a native function for test purpose.}
+	value
+]

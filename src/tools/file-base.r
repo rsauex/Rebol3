@@ -57,6 +57,7 @@ core: [
 	n-sets.c
 	n-strings.c
 	n-system.c
+	n-test.c
 	p-clipboard.c
 	p-console.c
 	p-dir.c
