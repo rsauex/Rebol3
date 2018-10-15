@@ -50,34 +50,34 @@ is-protected-error?: func[code][
 		--assert object? binary/init b none ; just clear existing bincode
 		--assert empty? b/buffer
 		--assert empty? b/buffer-write
-;	--test-- "BinCode - write positive unsigned integers (big endian)"
-;		b: binary 64
-;		--assert object? binary/write b [ui64 1 ui32 1 ui24 1 ui16 1 ui8 1]
-;		--assert #{000000000000000100000001000001000101} = b/buffer
-;		binary/init b none
-;		--assert object? binary/write b [ui64 1  ui32BE 1  ui24BE 1  ui16BE 1 ui8 1]
-;		--assert #{000000000000000100000001000001000101} = b/buffer
-;		--assert "11111" = rejoin binary/read b [ui64 ui32 ui24 ui16 ui8]
-;		--assert "11111" = rejoin binary/read b [at 1 ui64be ui32be ui24be ui16be ui8]
-;		binary/init b none
-;		binary/write b [
-;			#{7FFFFFFFFFFFFFFF}
-;			#{7FFFFFFF}
-;			#{7FFFFFFFFFFFFFFF}
-;			#{7FFFFF}
-;			#{7FFFFFFFFFFFFFFF}
-;			#{7FFF}
-;			#{7FFFFFFFFFFFFFFF}
-;			#{7F}
-;		]
-;		--assert 9223372036854775807 = binary/read b 'UI64
-;		--assert 2147483647 = binary/read b 'UI32
-;		--assert 9223372036854775807 = binary/read b 'UI64
-;		--assert 8388607 = binary/read b 'UI24
-;		--assert 9223372036854775807 = binary/read b 'UI64
-;		--assert 32767 = binary/read b 'UI16
-;		--assert 9223372036854775807 = binary/read b 'UI64
-;		--assert 127 = binary/read b 'UI8
+	--test-- "BinCode - write positive unsigned integers (big endian)"
+		b: binary 64
+		--assert object? binary/write b [ui64 1 ui32 1 ui24 1 ui16 1 ui8 1]
+		--assert #{000000000000000100000001000001000101} = b/buffer
+		binary/init b none
+		--assert object? binary/write b [ui64 1  ui32BE 1  ui24BE 1  ui16BE 1 ui8 1]
+		--assert #{000000000000000100000001000001000101} = b/buffer
+		--assert "11111" = rejoin binary/read b [ui64 ui32 ui24 ui16 ui8]
+		--assert "11111" = rejoin binary/read b [at 1 ui64be ui32be ui24be ui16be ui8]
+		binary/init b none
+		binary/write b [
+			#{7FFFFFFFFFFFFFFF}
+			#{7FFFFFFF}
+			#{7FFFFFFFFFFFFFFF}
+			#{7FFFFF}
+			#{7FFFFFFFFFFFFFFF}
+			#{7FFF}
+			#{7FFFFFFFFFFFFFFF}
+			#{7F}
+		]
+		--assert 9223372036854775807 = binary/read b 'UI64
+		--assert 2147483647 = binary/read b 'UI32
+		--assert 9223372036854775807 = binary/read b 'UI64
+		--assert 8388607 = binary/read b 'UI24
+		--assert 9223372036854775807 = binary/read b 'UI64
+		--assert 32767 = binary/read b 'UI16
+		--assert 9223372036854775807 = binary/read b 'UI64
+		--assert 127 = binary/read b 'UI8
 ;	--test-- "BinCode - write negative unsigned integers (big endian)"
 ;		binary/write b [UI8 -1 UI16 -1 UI24 -1 UI32 -1 UI64 -1]
 ;		--assert #{FF FFFF FFFFFF FFFFFFFF FFFFFFFFFFFFFFFF} = b/buffer
