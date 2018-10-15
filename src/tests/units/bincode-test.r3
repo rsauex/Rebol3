@@ -78,38 +78,38 @@ is-protected-error?: func[code][
 		--assert 32767 = binary/read b 'UI16
 		--assert 9223372036854775807 = binary/read b 'UI64
 		--assert 127 = binary/read b 'UI8
-;	--test-- "BinCode - write negative unsigned integers (big endian)"
-;		binary/write b [UI8 -1 UI16 -1 UI24 -1 UI32 -1 UI64 -1]
-;		--assert #{FF FFFF FFFFFF FFFFFFFF FFFFFFFFFFFFFFFF} = b/buffer
-;		--assert "255 65535 16777215 4294967295 -1" = reform binary/read b [ui8 ui16 ui24 ui32 ui64]
-;	--test-- "BinCode - unsigned integers (little endian)"
-;		binary/init b none
-;		--assert object? binary/write b [ui8 1  ui16LE 1  ui24LE 1  ui32LE 1]
-;		--assert #{01010001000001000000} = b/buffer
-;		--assert "1111" = rejoin binary/read b [at 1 ui8 ui16LE ui24LE ui32LE]
-;	--test-- "BinCode - write signed integers over range"
-;		binary/init b none
-;		; max values... should be ok
-;		--assert object? binary/write b [SI8  127]
-;		--assert object? binary/write b [SI8 -127]
-;		--assert object? binary/write b [SI16  32767]
-;		--assert object? binary/write b [SI16 -32767]
-;		--assert object? binary/write b [SI24  8388607]
-;		--assert object? binary/write b [SI24 -8388607]
-;		--assert object? binary/write b [SI32  2147483647]
-;		--assert object? binary/write b [SI32 -2147483647]
-;		; over range values.. should be "out of range" error
-;		--assert is-range-error? [binary/write b [SI8  128]]
-;		--assert is-range-error? [binary/write b [SI8 -128]]
-;		--assert is-range-error? [binary/write b [SI16  32768]]
-;		--assert is-range-error? [binary/write b [SI16 -32768]]
-;		--assert is-range-error? [binary/write b [SI24  8388608]]
-;		--assert is-range-error? [binary/write b [SI24 -8388608]]
-;		--assert is-range-error? [binary/write b [SI32  2147483648]]
-;		--assert is-range-error? [binary/write b [SI32 -2147483648]]
-;		; results:
-;		--assert [127 -127 32767 -32767 8388607 -8388607 2147483647 -2147483647]
-;		         = binary/read b [SI8 SI8 SI16 SI16 SI24 SI24 SI32 SI32]
+	--test-- "BinCode - write negative unsigned integers (big endian)"
+		binary/write b [UI8 -1 UI16 -1 UI24 -1 UI32 -1 UI64 -1]
+		--assert #{FF FFFF FFFFFF FFFFFFFF FFFFFFFFFFFFFFFF} = b/buffer
+		--assert "255 65535 16777215 4294967295 -1" = reform binary/read b [ui8 ui16 ui24 ui32 ui64]
+	--test-- "BinCode - unsigned integers (little endian)"
+		binary/init b none
+		--assert object? binary/write b [ui8 1  ui16LE 1  ui24LE 1  ui32LE 1]
+		--assert #{01010001000001000000} = b/buffer
+		--assert "1111" = rejoin binary/read b [at 1 ui8 ui16LE ui24LE ui32LE]
+	--test-- "BinCode - write signed integers over range"
+		binary/init b none
+		; max values... should be ok
+		--assert object? binary/write b [SI8  127]
+		--assert object? binary/write b [SI8 -127]
+		--assert object? binary/write b [SI16  32767]
+		--assert object? binary/write b [SI16 -32767]
+		--assert object? binary/write b [SI24  8388607]
+		--assert object? binary/write b [SI24 -8388607]
+		--assert object? binary/write b [SI32  2147483647]
+		--assert object? binary/write b [SI32 -2147483647]
+		; over range values.. should be "out of range" error
+		--assert is-range-error? [binary/write b [SI8  128]]
+		--assert is-range-error? [binary/write b [SI8 -128]]
+		--assert is-range-error? [binary/write b [SI16  32768]]
+		--assert is-range-error? [binary/write b [SI16 -32768]]
+		--assert is-range-error? [binary/write b [SI24  8388608]]
+		--assert is-range-error? [binary/write b [SI24 -8388608]]
+		--assert is-range-error? [binary/write b [SI32  2147483648]]
+		--assert is-range-error? [binary/write b [SI32 -2147483648]]
+		; results:
+		--assert [127 -127 32767 -32767 8388607 -8388607 2147483647 -2147483647]
+		         = binary/read b [SI8 SI8 SI16 SI16 SI24 SI24 SI32 SI32]
 ;
 ;	--test-- "BinCode - write unsigned integers over range"
 ;		binary/init b none
