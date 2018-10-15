@@ -96,7 +96,7 @@
 		//DISABLE_GC; // Don't let GC occur just for an expansion.
 
 		if (Reb_Opts->watch_expand) {
-			Debug_Fmt("Expand %x wide: %d tail: %d delta: %d", series, wide, series->tail, delta);
+			Debug_Fmt((const REBYTE *)"Expand %x wide: %d tail: %d delta: %d", series, wide, series->tail, delta);
 		}
 
 		// Create a new series that is bigger.

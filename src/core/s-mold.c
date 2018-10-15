@@ -125,7 +125,7 @@ enum {
 			break;
 		case '+':	// Add #[ if mold/all
 			if (GET_MOPT(mold, MOPT_MOLD_ALL)) {
-				Append_Bytes(series, "#[");
+				Append_Bytes(series, (REBYTE *)"#[");
 				ender = ']';
 			}
 			break;
@@ -263,7 +263,7 @@ enum {
 	// Add proper indentation:
 	if (!GET_MOPT(mold, MOPT_INDENT)) {
 		for (n = 0; n < mold->indent; n++)
-			Append_Bytes(mold->series, "    ");
+			Append_Bytes(mold->series, (REBYTE *)"    ");
 	}
 }
 
@@ -380,7 +380,7 @@ STOID Mold_String_Series(REBVAL *value, REB_MOLD *mold)
 
 	// Empty string:
 	if (idx >= VAL_TAIL(value)) {
-		Append_Bytes(mold->series, "\"\"");  //Trap0(RE_PAST_END);
+		Append_Bytes(mold->series, (REBYTE *)"\"\"");  //Trap0(RE_PAST_END);
 		return;
 	}
 
@@ -535,7 +535,7 @@ STOID Mold_Handle(REBVAL *value, REB_MOLD *mold)
 {
 	const REBYTE *name = VAL_HANDLE_NAME(value);
 	if (name != NULL) {
-		Append_Bytes(mold->series, "#[handle! ");
+		Append_Bytes(mold->series, (REBYTE *)"#[handle! ");
 		Append_Bytes(mold->series, (REBYTE *)name);
 		Append_Byte(mold->series, ']');
 	}
@@ -559,7 +559,7 @@ STOID Mold_Handle(REBVAL *value, REB_MOLD *mold)
 		out = Encode_Base16(value, 0, len > 32);
 		break;
 	case 64:
-		Append_Bytes(mold->series, "64");
+		Append_Bytes(mold->series, (REBYTE *)"64");
 		out = Encode_Base64(value, 0, len > 64, FALSE);
 		break;
 	case 2:
@@ -733,7 +733,7 @@ STOID Mold_Simple_Block(REB_MOLD *mold, REBVAL *block, REBCNT len)
 	// If it's too large, truncate it:
 	if ((SERIES_TAIL(mold->series) - start) > len) {
 		SERIES_TAIL(mold->series) = start + len;
-		Append_Bytes(mold->series, "...");
+		Append_Bytes(mold->series, (REBYTE *)"...");
 	}
 }
 
@@ -841,7 +841,7 @@ STOID Mold_Map(REBVAL *value, REB_MOLD *mold, REBFLG molded)
 
 	// Prevent endless mold loop:
 	if (Find_Same_Block(MOLD_LOOP, value) > 0) {
-		Append_Bytes(mold->series, "...]");
+		Append_Bytes(mold->series, (REBYTE *)"...]");
 		return;
 	}
 	Append_Val(MOLD_LOOP, value);
@@ -880,7 +880,7 @@ STOID Form_Object(REBVAL *value, REB_MOLD *mold)
 
 	// Prevent endless mold loop:
 	if (Find_Same_Block(MOLD_LOOP, value) > 0) {
-		Append_Bytes(mold->series, "...]");
+		Append_Bytes(mold->series, (REBYTE *)"...]");
 		return;
 	}
 	Append_Val(MOLD_LOOP, value);
@@ -916,7 +916,7 @@ STOID Mold_Object(REBVAL *value, REB_MOLD *mold)
 
 	// Prevent infinite looping:
 	if (Find_Same_Block(MOLD_LOOP, value) > 0) {
-		Append_Bytes(mold->series, "...]");
+		Append_Bytes(mold->series, (REBYTE *)"...]");
 		return;
 	}
 	Append_Val(MOLD_LOOP, value);
@@ -930,7 +930,7 @@ STOID Mold_Object(REBVAL *value, REB_MOLD *mold)
 			New_Indented_Line(mold);
 			Append_UTF8(mold->series, Get_Sym_Name(VAL_WORD_SYM(words+n)), -1);
 			//Print("Slot: %s", Get_Sym_Name(VAL_WORD_SYM(words+n)));
-			Append_Bytes(mold->series, ": ");
+			Append_Bytes(mold->series, (REBYTE *)": ");
 			if (IS_WORD(vals+n) && !GET_MOPT(mold, MOPT_MOLD_ALL)) Append_Byte(mold->series, '\'');
 			Mold_Value(mold, vals+n, TRUE);
 		}
@@ -1117,7 +1117,7 @@ STOID Mold_Error(REBVAL *value, REB_MOLD *mold, REBFLG molded)
 
 	case REB_FILE:
 		if (VAL_LEN(value) == 0) {
-			Append_Bytes(ser, "%\"\"");
+			Append_Bytes(ser, (REBYTE *)"%\"\"");
 			break;
 		}
 		Mold_File(value, mold);
@@ -1435,7 +1435,7 @@ append:
 
 	if (limit != 0 && STR_LEN(mo.series) > limit) {
 		SERIES_TAIL(mo.series) = limit;
-		Append_Bytes(mo.series, "..."); // adds a null at the tail
+		Append_Bytes(mo.series, (REBYTE *)"..."); // adds a null at the tail
 	}
 
 	return mo.series;
@@ -1452,8 +1452,8 @@ append:
 	REBYTE c;
 	REBYTE *dc;
 
-	Set_Root_Series(TASK_MOLD_LOOP, Make_Block(size/10), "mold loop");
-	Set_Root_Series(TASK_BUF_MOLD, Make_Unicode(size), "mold buffer");
+	Set_Root_Series(TASK_MOLD_LOOP, Make_Block(size/10), (REBYTE *)"mold loop");
+	Set_Root_Series(TASK_BUF_MOLD, Make_Unicode(size), (REBYTE *)"mold buffer");
 
 	// Create quoted char escape table:
 	Char_Escapes = cp = Make_Mem(MAX_ESC_CHAR+1); // cleared

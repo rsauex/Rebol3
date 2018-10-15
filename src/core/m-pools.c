@@ -692,7 +692,7 @@ crash:
 			if (!SERIES_FREED(series)) {
 				if (SERIES_WIDE(series) == size && SERIES_GET_FLAG(series, SER_MON)) {
 					//Debug_Fmt("%3d %4d %4d = \"%s\"", n++, series->tail, SERIES_TOTAL(series), series->data);
-					Debug_Fmt("%3d %4d %4d = \"%s\"", n++, series->tail, SERIES_REST(series), (SERIES_LABEL(series) ? SERIES_LABEL(series) : "-"));
+					Debug_Fmt((const REBYTE *)"%3d %4d %4d = \"%s\"", n++, series->tail, SERIES_REST(series), (SERIES_LABEL(series) ? SERIES_LABEL(series) : "-"));
 				}
 			}
 			series++;
@@ -770,7 +770,7 @@ crash:
 			size += seg->size;
 
 		used = Mem_Pools[n].has - Mem_Pools[n].free;
-		Debug_Fmt("Pool[%-2d] %-4dB %-5d/%-5d:%-4d (%-2d%%) %-2d segs, %-07d total",
+		Debug_Fmt((const REBYTE *)"Pool[%-2d] %-4dB %-5d/%-5d:%-4d (%-2d%%) %-2d segs, %-07d total",
 			n,
 			Mem_Pools[n].wide,
 			used,
@@ -784,8 +784,8 @@ crash:
 		tused += used * Mem_Pools[n].wide;
 		total += size;
 	}
-	Debug_Fmt("Pools used %d of %d (%2d%%)", tused, total, (tused*100) / total);
-	Debug_Fmt("System pool used %d", Mem_Pools[SYSTEM_POOL].has);
+	Debug_Fmt((const REBYTE *)"Pools used %d of %d (%2d%%)", tused, total, (tused*100) / total);
+	Debug_Fmt((const REBYTE *)"System pool used %d", Mem_Pools[SYSTEM_POOL].has);
 	//Debug_Fmt("Raw allocator reports %d", PG_Mem_Usage);
 }
 
@@ -864,7 +864,7 @@ crash:
 				if (f) Debug_Fmt_("ODD[%d]", SERIES_WIDE(series));
 			}
 			if (f && SERIES_WIDE(series)) {
-				Debug_Fmt(" units: %-5d tail: %-5d bytes: %-7d", SERIES_REST(series), SERIES_TAIL(series), SERIES_TOTAL(series));
+				Debug_Fmt((const REBYTE *)" units: %-5d tail: %-5d bytes: %-7d", SERIES_REST(series), SERIES_TAIL(series), SERIES_TOTAL(series));
 			}
 
 			series++;
@@ -879,6 +879,7 @@ crash:
 
 	if (flags & 1) {
 		Debug_Fmt(
+			  (const REBYTE *)
 			  "Series Memory Info:\n"
 			  "  node   size = %d\n"
 			  "  series size = %d\n"

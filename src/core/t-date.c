@@ -104,7 +104,7 @@
 		|| VAL_DAY(value) == 0
 		|| VAL_DAY(value) > 31
 	) {
-		Append_Bytes(mold->series, "?date?");
+		Append_Bytes(mold->series, (REBYTE *)"?date?");
 		return;
 	}
 

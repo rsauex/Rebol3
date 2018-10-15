@@ -175,7 +175,7 @@ typedef struct {
 /*
 ***********************************************************************/
 {
-	Register_Codec("wav", Codec_WAV);
+	Register_Codec((REBYTE *)"wav", Codec_WAV);
 }
 
 #endif

@@ -10850,7 +10850,7 @@ extern void Register_Codec(char *name, codo dispatcher);
 /*
 ***********************************************************************/
 {
-	Register_Codec("jpeg", Codec_JPEG_Image);
+	Register_Codec((REBYTE *)"jpeg", Codec_JPEG_Image);
 }
 
 #ifdef _MSC_VER

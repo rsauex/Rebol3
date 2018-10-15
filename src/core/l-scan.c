@@ -601,9 +601,9 @@
 	errs = Make_Error(errnum, 0, 0, 0);
 	error = (ERROR_OBJ *)FRM_VALUES(errs);
 	ser = Make_Binary(len + 16);
-	Append_Bytes(ser, "(line ");
+	Append_Bytes(ser, (REBYTE *)"(line ");
 	Append_Int(ser, ss->line_count);
-	Append_Bytes(ser, ") ");
+	Append_Bytes(ser, (REBYTE *)") ");
 	Append_Series(ser, (REBYTE*)bp, len);
 	Set_String(&error->nearest, ser);
 	Set_String(&error->arg1, Copy_Bytes(name, -1));
@@ -1632,8 +1632,8 @@ exit_block:
 /*
 ***********************************************************************/
 {
-	Set_Root_Series(TASK_BUF_EMIT, Make_Block(511), "emit block");
-	Set_Root_Series(TASK_BUF_UTF8, Make_Unicode(1020), "utf8 buffer");
+	Set_Root_Series(TASK_BUF_EMIT, Make_Block(511), (REBYTE *)"emit block");
+	Set_Root_Series(TASK_BUF_UTF8, Make_Unicode(1020), (REBYTE *)"utf8 buffer");
 }
 
 
