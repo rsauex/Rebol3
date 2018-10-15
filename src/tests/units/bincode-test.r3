@@ -110,23 +110,23 @@ is-protected-error?: func[code][
 		; results:
 		--assert [127 -127 32767 -32767 8388607 -8388607 2147483647 -2147483647]
 		         = binary/read b [SI8 SI8 SI16 SI16 SI24 SI24 SI32 SI32]
-;
-;	--test-- "BinCode - write unsigned integers over range"
-;		binary/init b none
-;		; max values... should be ok
-;		--assert object? binary/write b [UI8  255]
-;		--assert object? binary/write b [UI16 65535]
-;		--assert object? binary/write b [UI24 16777215]
-;		--assert object? binary/write b [UI32 4294967295]
-;		; --assert object? binary/write b [UI64 18446744073709551615.0] ;- not yet suported
-;
-;		; over range values.. should be "out of range" error
-;		--assert is-range-error? [binary/write b [UI8  256]]
-;		--assert is-range-error? [binary/write b [UI16 65536]]
-;		--assert is-range-error? [binary/write b [UI24 16777216]]
-;		--assert is-range-error? [binary/write b [UI32 4294967296]]
-;		; results:
-;		--assert [255 65535 16777215 4294967295] = binary/read b [UI8 UI16 UI24 UI32]
+
+	--test-- "BinCode - write unsigned integers over range"
+		binary/init b none
+		; max values... should be ok
+		--assert object? binary/write b [UI8  255]
+		--assert object? binary/write b [UI16 65535]
+		--assert object? binary/write b [UI24 16777215]
+		--assert object? binary/write b [UI32 4294967295]
+		; --assert object? binary/write b [UI64 18446744073709551615.0] ;- not yet suported
+
+		; over range values.. should be "out of range" error
+		--assert is-range-error? [binary/write b [UI8  256]]
+		--assert is-range-error? [binary/write b [UI16 65536]]
+		--assert is-range-error? [binary/write b [UI24 16777216]]
+		--assert is-range-error? [binary/write b [UI32 4294967296]]
+		; results:
+		--assert [255 65535 16777215 4294967295] = binary/read b [UI8 UI16 UI24 UI32]
 ;
 ;	b: binary 32
 ;	--test-- "BinCode - BYTES"
