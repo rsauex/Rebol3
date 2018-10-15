@@ -186,10 +186,10 @@ is-protected-error?: func[code][
 	--test-- "BinCode - UNIXTIME-NOW"
 		;Writes UNIX time as UI32 value
 		b: binary 4
-		binary/write b [UNIXTIME-NOW]
-		--assert 4 = length? b/buffer
-		binary/read b [i: UI32]
-;		time: now/utc
+;		binary/write b [UNIXTIME-NOW]
+;		--assert 4 = length? b/buffer
+;		binary/read b [i: UI32]
+		time: now/utc
 ;		--assert time/date   = (1-Jan-1970 + (to integer! i / 86400))
 ;		--assert time/hour   = (to-integer i // 86400 / 3600)
 ;		--assert time/minute = (to-integer i // 86400 // 3600 / 60)
