@@ -183,10 +183,10 @@ is-protected-error?: func[code][
 		binary/read b [ui16 i: length?] --assert i = 2
 		binary/read b [ui16 i: length?] --assert i = 0
 
-;	--test-- "BinCode - UNIXTIME-NOW"
-;		;Writes UNIX time as UI32 value
-;		b: binary 4
-;		binary/write b [UNIXTIME-NOW]
+	--test-- "BinCode - UNIXTIME-NOW"
+		;Writes UNIX time as UI32 value
+		b: binary 4
+		binary/write b [UNIXTIME-NOW]
 ;		--assert 4 = length? b/buffer
 ;		binary/read b [i: UI32]
 ;		time: now/utc
