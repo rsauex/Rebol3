@@ -127,24 +127,24 @@ is-protected-error?: func[code][
 		--assert is-range-error? [binary/write b [UI32 4294967296]]
 		; results:
 		--assert [255 65535 16777215 4294967295] = binary/read b [UI8 UI16 UI24 UI32]
-;
-;	b: binary 32
-;	--test-- "BinCode - BYTES"
-;	     --assert object? binary/write b [#{cafe}]
-;	     --assert #{CAFE} = binary/read b 'bytes
-;	--test-- "BinCode - UI8BYTES"
-;		--assert object? binary/write b [UI8BYTES #{cafe}]
-;		--assert #{02CAFE} = binary/read b 'bytes
-;	--test-- "BinCode - UI16BYTES"
-;		--assert object? binary/write b [UI16BYTES #{cafe}]
-;		--assert #{0002CAFE} = binary/read b 'bytes
-;	--test-- "BinCode - UI24BYTES"
-;		--assert object? binary/write b [UI24BYTES #{cafe}]
-;		--assert #{000002CAFE} = binary/read b 'bytes
-;	--test-- "BinCode - UI32BYTES"
-;		--assert object? binary/write b [UI32BYTES #{cafe}]
-;		--assert #{00000002CAFE} = binary/read b 'bytes
-;
+
+	b: binary 32
+	--test-- "BinCode - BYTES"
+	     --assert object? binary/write b [#{cafe}]
+	     --assert #{CAFE} = binary/read b 'bytes
+	--test-- "BinCode - UI8BYTES"
+		--assert object? binary/write b [UI8BYTES #{cafe}]
+		--assert #{02CAFE} = binary/read b 'bytes
+	--test-- "BinCode - UI16BYTES"
+		--assert object? binary/write b [UI16BYTES #{cafe}]
+		--assert #{0002CAFE} = binary/read b 'bytes
+	--test-- "BinCode - UI24BYTES"
+		--assert object? binary/write b [UI24BYTES #{cafe}]
+		--assert #{000002CAFE} = binary/read b 'bytes
+	--test-- "BinCode - UI32BYTES"
+		--assert object? binary/write b [UI32BYTES #{cafe}]
+		--assert #{00000002CAFE} = binary/read b 'bytes
+
 ;	--test-- "BinCode - AT"
 ;		;AT is using absolute positioning
 ;		b: binary 8
