@@ -22,6 +22,6 @@ wrap load %units/enum-test.r3
 wrap load %units/conditional-test.r3
 wrap load %units/protect-test.r3
 wrap load %units/crash-test.r3
-;wrap load %units/bincode-test.r3
+wrap load %units/bincode-test.r3
 
 ***end-run***
