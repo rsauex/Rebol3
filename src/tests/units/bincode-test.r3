@@ -145,24 +145,24 @@ is-protected-error?: func[code][
 		--assert object? binary/write b [UI32BYTES #{cafe}]
 		--assert #{00000002CAFE} = binary/read b 'bytes
 
-;	--test-- "BinCode - AT"
-;		;AT is using absolute positioning
-;		b: binary 8
-;		
-;		binary/write b [AT 4 UI8 4]
-;		binary/write b [AT 3 UI8 3]
-;		binary/write b [AT 2 UI8 2]
-;		binary/write b [AT 1 UI8 1]
-;		--assert is-range-error? [binary/write b [AT -1 UI8 1]]
-;		--assert #{01020304} = b/buffer
-;		i: 0
-;		binary/read b [AT 1 i: UI8] --assert i = 1
-;		binary/read b [AT 2 i: UI8] --assert i = 2
-;		binary/read b [AT 3 i: UI8] --assert i = 3
-;		binary/read b [AT 4 i: UI8] --assert i = 4
-;		--assert is-range-error? [binary/read b [AT  5 i: UI8]]
-;		--assert is-range-error? [binary/read b [AT -1 i: UI8]]
-;
+	--test-- "BinCode - AT"
+		;AT is using absolute positioning
+		b: binary 8
+		
+		binary/write b [AT 4 UI8 4]
+		binary/write b [AT 3 UI8 3]
+		binary/write b [AT 2 UI8 2]
+		binary/write b [AT 1 UI8 1]
+		--assert is-range-error? [binary/write b [AT -1 UI8 1]]
+		--assert #{01020304} = b/buffer
+		i: 0
+		binary/read b [AT 1 i: UI8] --assert i = 1
+		binary/read b [AT 2 i: UI8] --assert i = 2
+		binary/read b [AT 3 i: UI8] --assert i = 3
+		binary/read b [AT 4 i: UI8] --assert i = 4
+		--assert is-range-error? [binary/read b [AT  5 i: UI8]]
+		--assert is-range-error? [binary/read b [AT -1 i: UI8]]
+
 ;	--test-- "BinCode - SKIP"
 ;		;SKIP is using relative positioning
 ;		b: binary #{01020304}
