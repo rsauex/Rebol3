@@ -63,8 +63,9 @@
 
 REBARGS Main_Args;
 
-#define PROMPT_STR "\x1B[1;31;49m>>\x1B[1;33;49m "
-#define RESULT_STR "\x1B[32m==\x1B[1;32;49m "
+#define PROMPT_STR (const REBYTE *)"\x1B[1;31;49m>>\x1B[1;33;49m "
+#define RESULT_STR (const REBYTE *)"\x1B[32m==\x1B[1;32;49m "
+#define ANSI_RESET (const REBYTE *)"\x1B[0m"
 
 #ifdef TO_WINDOWS
 #define MAX_TITLE_LENGTH  1024
@@ -123,7 +124,7 @@ void Host_Repl() {
 
 		if (!line) {
 			// "end of stream" - for example on CTRL+C
-			Put_Str("\x1B[0m"); //reset console color before leaving
+			Put_Str(ANSI_RESET); //reset console color before leaving
 			goto cleanup_and_return;
 		}
 
@@ -173,8 +174,8 @@ void Host_Repl() {
 		if (input_len + line_len > input_max) {
 			REBYTE *tmp = OS_Make(2 * input_max);
 			if (!tmp) {
-				Put_Str("\x1B[0m"); //reset console color;
-				Host_Crash("Growing console input buffer failed!");
+				Put_Str(ANSI_RESET); //reset console color;
+				Host_Crash((const REBYTE *)"Growing console input buffer failed!");
 			}
 			memcpy(tmp, input, input_len);
 			OS_Free(input);
@@ -194,7 +195,7 @@ void Host_Repl() {
 		input_len = 0;
 		cont_level = 0;
 
-		Put_Str("\x1B[0m"); //reset color
+		Put_Str(ANSI_RESET); //reset color
 
 		RL_Do_String(input, 0, 0);
 		RL_Print_TOS(TRUE, RESULT_STR);
@@ -268,13 +269,13 @@ int main(int argc, char **argv) {
 #endif
 
 	// Initialize the REBOL library (reb-lib):
-	if (!CHECK_STRUCT_ALIGN) Host_Crash("Incompatible struct alignment");
-	if (!Host_Lib) Host_Crash("Missing host lib");
+	if (!CHECK_STRUCT_ALIGN) Host_Crash((const REBYTE *)"Incompatible struct alignment");
+	if (!Host_Lib) Host_Crash((const REBYTE *)"Missing host lib");
 	// !!! Second part will become vers[2] < RL_REV on release!!!
-	if (vers[1] != RL_VER || vers[2] != RL_REV) Host_Crash("Incompatible reb-lib DLL");
+	if (vers[1] != RL_VER || vers[2] != RL_REV) Host_Crash((const REBYTE *)"Incompatible reb-lib DLL");
 	n = RL_Init(&Main_Args, Host_Lib);
-	if (n == 1) Host_Crash("Host-lib wrong size");
-	if (n == 2) Host_Crash("Host-lib wrong version/checksum");
+	if (n == 1) Host_Crash((const REBYTE *)"Host-lib wrong size");
+	if (n == 2) Host_Crash((const REBYTE *)"Host-lib wrong version/checksum");
 
 #ifndef REB_CORE
 	Init_Windows();

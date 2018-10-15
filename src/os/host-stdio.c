@@ -121,7 +121,7 @@ static int Fetch_Buf()
 
 	OS_Do_Device(&Std_IO_Req, RDC_OPEN);
 
-	if (Std_IO_Req.error) Host_Crash("stdio open");
+	if (Std_IO_Req.error) Host_Crash((const REBYTE *)"stdio open");
 
 	inbuf = OS_Make(inbuf_len);
 	inbuf[0] = 0;
@@ -176,5 +176,5 @@ static int Fetch_Buf()
 
 	OS_Do_Device(&Std_IO_Req, RDC_WRITE);
 
-	if (Std_IO_Req.error) Host_Crash("stdio write");
+	if (Std_IO_Req.error) Host_Crash((const REBYTE *)"stdio write");
 }
