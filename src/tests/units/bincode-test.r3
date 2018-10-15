@@ -186,31 +186,31 @@ is-protected-error?: func[code][
 	--test-- "BinCode - UNIXTIME-NOW"
 		;Writes UNIX time as UI32 value
 		b: binary 4
-;		binary/write b [UNIXTIME-NOW]
-;		--assert 4 = length? b/buffer
-;		binary/read b [i: UI32]
-		time: now/utc
+		binary/write b [UNIXTIME-NOW]
+		--assert 4 = length? b/buffer
+		binary/read b [i: UI32]
+;@@ Clang on x64 Linux reports problem with following line!
+;		time: now/utc
 ;		--assert time/date   = (1-Jan-1970 + (to integer! i / 86400))
 ;		--assert time/hour   = (to-integer i // 86400 / 3600)
 ;		--assert time/minute = (to-integer i // 86400 // 3600 / 60)
 ;		;lets say that seconds will be ok too:)
 ;
-;	--test-- "BinCode - overwrite protected values"
-;		out: copy #{} ;not yet protected
-;		blk: copy []
-;		--assert object? binary/write out #{babe}
-;		--assert (binary/read out [at 1 i: ui8] i = 186)
-;
-;		protect :out
-;		protect :blk
-;		protect/words [i]
-;		--assert is-protected-error? [binary/write out #{babe}]
-;		
-;		
-;		--assert is-protected-error? [binary/read out [at 1 i: ui8]]
-;		--assert is-protected-error? [binary/read/into out [at 1 ui8] blk]
-;		unprotect/words [blk out i]
+	--test-- "BinCode - overwrite protected values"
+		out: copy #{} ;not yet protected
+		blk: copy []
+		--assert object? binary/write out #{babe}
+		--assert (binary/read out [at 1 i: ui8] i = 186)
 
+		protect :out
+		protect :blk
+		protect/words [i]
+		--assert is-protected-error? [binary/write out #{babe}]
+		
+		
+		--assert is-protected-error? [binary/read out [at 1 i: ui8]]
+		--assert is-protected-error? [binary/read/into out [at 1 ui8] blk]
+		unprotect/words [blk out i]
 
 
 
