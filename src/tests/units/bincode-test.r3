@@ -163,18 +163,18 @@ is-protected-error?: func[code][
 		--assert is-range-error? [binary/read b [AT  5 i: UI8]]
 		--assert is-range-error? [binary/read b [AT -1 i: UI8]]
 
-;	--test-- "BinCode - SKIP"
-;		;SKIP is using relative positioning
-;		b: binary #{01020304}
-;		i: 0
-;		binary/read b [skip  1 i: UI8] --assert i = 2
-;		binary/read b [skip -1 i: UI8] --assert i = 2
-;		binary/read b [skip  0 i: UI8] --assert i = 3
-;		binary/read b [skip -2 i: UI8] --assert i = 2
-;		binary/read b [at 1 skip 3  i: UI8] --assert i = 4
-;		--assert is-range-error? [binary/read b [AT 1 SKIP  5 UI8]]
-;		--assert is-range-error? [binary/read b [AT 1 SKIP -1 UI8]]
-;
+	--test-- "BinCode - SKIP"
+		;SKIP is using relative positioning
+		b: binary #{01020304}
+		i: 0
+		binary/read b [skip  1 i: UI8] --assert i = 2
+		binary/read b [skip -1 i: UI8] --assert i = 2
+		binary/read b [skip  0 i: UI8] --assert i = 3
+		binary/read b [skip -2 i: UI8] --assert i = 2
+		binary/read b [at 1 skip 3  i: UI8] --assert i = 4
+		--assert is-range-error? [binary/read b [AT 1 SKIP  5 UI8]]
+		--assert is-range-error? [binary/read b [AT 1 SKIP -1 UI8]]
+
 ;	--test-- "BinCode - LENGTH?"
 ;		;LENGTH? returns number of bytes remaining in the buffer
 ;		b: binary #{01020304}
