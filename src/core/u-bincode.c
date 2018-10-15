@@ -644,8 +644,8 @@ system/standard/bincode: make object! [
 					case SYM_UNIXTIME_NOW:
 						value--; // no args
 						n = 4;
-						i = (i32)time(NULL);
-						REBYTE *bp = (REBYTE*)&i;
+						u = (u64)time(NULL);
+						REBYTE *bp = (REBYTE*)&u;
 #ifdef ENDIAN_LITTLE
 						cp[0] = bp[3]; cp[1] = bp[2]; cp[2] = bp[1]; cp[3] = bp[0];
 #else
