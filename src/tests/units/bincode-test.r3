@@ -51,7 +51,7 @@ is-protected-error?: func[code][
 		--assert empty? b/buffer
 		--assert empty? b/buffer-write
 	--test-- "BinCode - write positive unsigned integers (big endian)"
-		b: binary 64
+		binary/init b 64
 		--assert object? binary/write b [ui64 1 ui32 1 ui24 1 ui16 1 ui8 1]
 		--assert #{000000000000000100000001000001000101} = b/buffer
 		binary/init b none
@@ -128,7 +128,7 @@ is-protected-error?: func[code][
 		; results:
 		--assert [255 65535 16777215 4294967295] = binary/read b [UI8 UI16 UI24 UI32]
 
-	b: binary 32
+	binary/init b 32
 	--test-- "BinCode - BYTES"
 	     --assert object? binary/write b [#{cafe}]
 	     --assert #{CAFE} = binary/read b 'bytes
@@ -147,7 +147,7 @@ is-protected-error?: func[code][
 
 	--test-- "BinCode - AT"
 		;AT is using absolute positioning
-		b: binary 8
+		binary/init b 8
 		
 		binary/write b [AT 4 UI8 4]
 		binary/write b [AT 3 UI8 3]
@@ -165,7 +165,7 @@ is-protected-error?: func[code][
 
 	--test-- "BinCode - SKIP"
 		;SKIP is using relative positioning
-		b: binary #{01020304}
+		binary/init b #{01020304}
 		i: 0
 		binary/read b [skip  1 i: UI8] --assert i = 2
 		binary/read b [skip -1 i: UI8] --assert i = 2
@@ -177,7 +177,7 @@ is-protected-error?: func[code][
 
 	--test-- "BinCode - LENGTH?"
 		;LENGTH? returns number of bytes remaining in the buffer
-		b: binary #{01020304}
+		binary/init b #{01020304}
 		i: 0
 		binary/read b [     i: length?] --assert i = 4
 		binary/read b [ui16 i: length?] --assert i = 2
@@ -185,7 +185,7 @@ is-protected-error?: func[code][
 
 	--test-- "BinCode - UNIXTIME-NOW"
 		;Writes UNIX time as UI32 value
-		b: binary 8
+		binary/init b 8
 		binary/write b #{5BC5AEF9} ;[UNIXTIME-NOW]
 		--assert 4 = length? b/buffer
 		binary/read b [i: UI32]
@@ -210,7 +210,12 @@ is-protected-error?: func[code][
 		
 		--assert is-protected-error? [binary/read out [at 1 i: ui8]]
 		--assert is-protected-error? [binary/read/into out [at 1 ui8] blk]
-		unprotect/words [blk out i]
+		unprotect/words  [blk out i]
+		unprotect/values [blk out]
+		clear out
+		clear blk
+		out: none
+		blk: none
 
 
 
