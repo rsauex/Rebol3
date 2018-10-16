@@ -50,84 +50,84 @@ is-protected-error?: func[code][
 		--assert object? binary/init b none ; just clear existing bincode
 		--assert empty? b/buffer
 		--assert empty? b/buffer-write
-;	--test-- "BinCode - write positive unsigned integers (big endian)"
-;		binary/init b 64
-;		--assert object? binary/write b [ui64 1 ui32 1 ui24 1 ui16 1 ui8 1]
-;		--assert #{000000000000000100000001000001000101} = b/buffer
-;		binary/init b none
-;		--assert object? binary/write b [ui64 1  ui32BE 1  ui24BE 1  ui16BE 1 ui8 1]
-;		--assert #{000000000000000100000001000001000101} = b/buffer
-;		--assert "11111" = rejoin binary/read b [ui64 ui32 ui24 ui16 ui8]
-;		--assert "11111" = rejoin binary/read b [at 1 ui64be ui32be ui24be ui16be ui8]
-;		binary/init b none
-;		binary/write b [
-;			#{7FFFFFFFFFFFFFFF}
-;			#{7FFFFFFF}
-;			#{7FFFFFFFFFFFFFFF}
-;			#{7FFFFF}
-;			#{7FFFFFFFFFFFFFFF}
-;			#{7FFF}
-;			#{7FFFFFFFFFFFFFFF}
-;			#{7F}
-;		]
-;		--assert 9223372036854775807 = binary/read b 'UI64
-;		--assert 2147483647 = binary/read b 'UI32
-;		--assert 9223372036854775807 = binary/read b 'UI64
-;		--assert 8388607 = binary/read b 'UI24
-;		--assert 9223372036854775807 = binary/read b 'UI64
-;		--assert 32767 = binary/read b 'UI16
-;		--assert 9223372036854775807 = binary/read b 'UI64
-;		--assert 127 = binary/read b 'UI8
-;	--test-- "BinCode - write negative unsigned integers (big endian)"
-;		binary/write b [UI8 -1 UI16 -1 UI24 -1 UI32 -1 UI64 -1]
-;		--assert #{FF FFFF FFFFFF FFFFFFFF FFFFFFFFFFFFFFFF} = b/buffer
-;		--assert "255 65535 16777215 4294967295 -1" = reform binary/read b [ui8 ui16 ui24 ui32 ui64]
-;	--test-- "BinCode - unsigned integers (little endian)"
-;		binary/init b none
-;		--assert object? binary/write b [ui8 1  ui16LE 1  ui24LE 1  ui32LE 1]
-;		--assert #{01010001000001000000} = b/buffer
-;		--assert "1111" = rejoin binary/read b [at 1 ui8 ui16LE ui24LE ui32LE]
-;	--test-- "BinCode - write signed integers over range"
-;		binary/init b none
-;		; max values... should be ok
-;		--assert object? binary/write b [SI8  127]
-;		--assert object? binary/write b [SI8 -127]
-;		--assert object? binary/write b [SI16  32767]
-;		--assert object? binary/write b [SI16 -32767]
-;		--assert object? binary/write b [SI24  8388607]
-;		--assert object? binary/write b [SI24 -8388607]
-;		--assert object? binary/write b [SI32  2147483647]
-;		--assert object? binary/write b [SI32 -2147483647]
-;		; over range values.. should be "out of range" error
-;		--assert is-range-error? [binary/write b [SI8  128]]
-;		--assert is-range-error? [binary/write b [SI8 -128]]
-;		--assert is-range-error? [binary/write b [SI16  32768]]
-;		--assert is-range-error? [binary/write b [SI16 -32768]]
-;		--assert is-range-error? [binary/write b [SI24  8388608]]
-;		--assert is-range-error? [binary/write b [SI24 -8388608]]
-;		--assert is-range-error? [binary/write b [SI32  2147483648]]
-;		--assert is-range-error? [binary/write b [SI32 -2147483648]]
-;		; results:
-;		--assert [127 -127 32767 -32767 8388607 -8388607 2147483647 -2147483647]
-;		         = binary/read b [SI8 SI8 SI16 SI16 SI24 SI24 SI32 SI32]
-;
-;	--test-- "BinCode - write unsigned integers over range"
-;		binary/init b none
-;		; max values... should be ok
-;		--assert object? binary/write b [UI8  255]
-;		--assert object? binary/write b [UI16 65535]
-;		--assert object? binary/write b [UI24 16777215]
-;		--assert object? binary/write b [UI32 4294967295]
-;		; --assert object? binary/write b [UI64 18446744073709551615.0] ;- not yet suported
-;
-;		; over range values.. should be "out of range" error
-;		--assert is-range-error? [binary/write b [UI8  256]]
-;		--assert is-range-error? [binary/write b [UI16 65536]]
-;		--assert is-range-error? [binary/write b [UI24 16777216]]
-;		--assert is-range-error? [binary/write b [UI32 4294967296]]
-;		; results:
-;		--assert [255 65535 16777215 4294967295] = binary/read b [UI8 UI16 UI24 UI32]
-;
+	--test-- "BinCode - write positive unsigned integers (big endian)"
+		binary/init b 64
+		--assert object? binary/write b [ui64 1 ui32 1 ui24 1 ui16 1 ui8 1]
+		--assert #{000000000000000100000001000001000101} = b/buffer
+		binary/init b none
+		--assert object? binary/write b [ui64 1  ui32BE 1  ui24BE 1  ui16BE 1 ui8 1]
+		--assert #{000000000000000100000001000001000101} = b/buffer
+		--assert "11111" = rejoin binary/read b [ui64 ui32 ui24 ui16 ui8]
+		--assert "11111" = rejoin binary/read b [at 1 ui64be ui32be ui24be ui16be ui8]
+		binary/init b none
+		binary/write b [
+			#{7FFFFFFFFFFFFFFF}
+			#{7FFFFFFF}
+			#{7FFFFFFFFFFFFFFF}
+			#{7FFFFF}
+			#{7FFFFFFFFFFFFFFF}
+			#{7FFF}
+			#{7FFFFFFFFFFFFFFF}
+			#{7F}
+		]
+		--assert 9223372036854775807 = binary/read b 'UI64
+		--assert 2147483647 = binary/read b 'UI32
+		--assert 9223372036854775807 = binary/read b 'UI64
+		--assert 8388607 = binary/read b 'UI24
+		--assert 9223372036854775807 = binary/read b 'UI64
+		--assert 32767 = binary/read b 'UI16
+		--assert 9223372036854775807 = binary/read b 'UI64
+		--assert 127 = binary/read b 'UI8
+	--test-- "BinCode - write negative unsigned integers (big endian)"
+		binary/write b [UI8 -1 UI16 -1 UI24 -1 UI32 -1 UI64 -1]
+		--assert #{FF FFFF FFFFFF FFFFFFFF FFFFFFFFFFFFFFFF} = b/buffer
+		--assert "255 65535 16777215 4294967295 -1" = reform binary/read b [ui8 ui16 ui24 ui32 ui64]
+	--test-- "BinCode - unsigned integers (little endian)"
+		binary/init b none
+		--assert object? binary/write b [ui8 1  ui16LE 1  ui24LE 1  ui32LE 1]
+		--assert #{01010001000001000000} = b/buffer
+		--assert "1111" = rejoin binary/read b [at 1 ui8 ui16LE ui24LE ui32LE]
+	--test-- "BinCode - write signed integers over range"
+		binary/init b none
+		; max values... should be ok
+		--assert object? binary/write b [SI8  127]
+		--assert object? binary/write b [SI8 -127]
+		--assert object? binary/write b [SI16  32767]
+		--assert object? binary/write b [SI16 -32767]
+		--assert object? binary/write b [SI24  8388607]
+		--assert object? binary/write b [SI24 -8388607]
+		--assert object? binary/write b [SI32  2147483647]
+		--assert object? binary/write b [SI32 -2147483647]
+		; over range values.. should be "out of range" error
+		--assert is-range-error? [binary/write b [SI8  128]]
+		--assert is-range-error? [binary/write b [SI8 -128]]
+		--assert is-range-error? [binary/write b [SI16  32768]]
+		--assert is-range-error? [binary/write b [SI16 -32768]]
+		--assert is-range-error? [binary/write b [SI24  8388608]]
+		--assert is-range-error? [binary/write b [SI24 -8388608]]
+		--assert is-range-error? [binary/write b [SI32  2147483648]]
+		--assert is-range-error? [binary/write b [SI32 -2147483648]]
+		; results:
+		--assert [127 -127 32767 -32767 8388607 -8388607 2147483647 -2147483647]
+		         = binary/read b [SI8 SI8 SI16 SI16 SI24 SI24 SI32 SI32]
+
+	--test-- "BinCode - write unsigned integers over range"
+		binary/init b none
+		; max values... should be ok
+		--assert object? binary/write b [UI8  255]
+		--assert object? binary/write b [UI16 65535]
+		--assert object? binary/write b [UI24 16777215]
+		--assert object? binary/write b [UI32 4294967295]
+		; --assert object? binary/write b [UI64 18446744073709551615.0] ;- not yet suported
+
+		; over range values.. should be "out of range" error
+		--assert is-range-error? [binary/write b [UI8  256]]
+		--assert is-range-error? [binary/write b [UI16 65536]]
+		--assert is-range-error? [binary/write b [UI24 16777216]]
+		--assert is-range-error? [binary/write b [UI32 4294967296]]
+		; results:
+		--assert [255 65535 16777215 4294967295] = binary/read b [UI8 UI16 UI24 UI32]
+
 	binary/init b 32
 	--test-- "BinCode - BYTES"
 	     --assert object? binary/write b [#{cafe}]
@@ -186,14 +186,14 @@ is-protected-error?: func[code][
 	--test-- "BinCode - UNIXTIME-NOW"
 		;Writes UNIX time as UI32 value
 		binary/init b 8
-		binary/write b #{5BC5AEF9} ;[UNIXTIME-NOW]
+		binary/write b [UNIXTIME-NOW]
 		--assert 4 = length? b/buffer
 		binary/read b [i: UI32]
 
-		;time: now/utc
-		;--assert time/date   = (1-Jan-1970 + (to integer! i / 86400))
-		;--assert time/hour   = (to-integer i // 86400 / 3600)
-		;--assert time/minute = (to-integer i // 86400 // 3600 / 60)
+		time: now/utc
+		--assert time/date   = (1-Jan-1970 + (to integer! i / 86400))
+		--assert time/hour   = (to-integer i // 86400 / 3600)
+		--assert time/minute = (to-integer i // 86400 // 3600 / 60)
 		;lets say that seconds will be ok too:)
 
 	--test-- "BinCode - overwrite protected values"
