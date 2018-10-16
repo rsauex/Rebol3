@@ -190,8 +190,8 @@ is-protected-error?: func[code][
 		--assert 4 = length? b/buffer
 		binary/read b [i: UI32]
 
-		time: now/utc
-		--assert time/date   = (1-Jan-1970 + (to integer! i / 86400))
+		;time: now/utc
+		;--assert time/date   = (1-Jan-1970 + (to integer! i / 86400))
 		;--assert time/hour   = (to-integer i // 86400 / 3600)
 		;--assert time/minute = (to-integer i // 86400 // 3600 / 60)
 		;lets say that seconds will be ok too:)
