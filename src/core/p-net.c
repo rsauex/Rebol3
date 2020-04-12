@@ -36,7 +36,8 @@
 
 enum Transport_Types {
 	TRANSPORT_TCP,
-	TRANSPORT_UDP
+	TRANSPORT_UDP,
+	TRANSPORT_UNIX_STREAM
 };
 
 /***********************************************************************
@@ -93,6 +94,30 @@ enum Transport_Types {
 
 /***********************************************************************
 **
+*/	static void Init_Unix_Addr(REBREQ *sock, REBVAL *spec, REBSER *port)
+/*
+***********************************************************************/
+{
+	REBVAL *path;
+	REBSER *ser;
+
+	path = Obj_Value(spec, STD_PORT_SPEC_HEAD_REF);
+	if (!path) Trap1(RE_INVALID_SPEC, spec);
+
+	if (IS_URL(path)) path = Obj_Value(spec, STD_PORT_SPEC_FILE_PATH);
+	else if (!IS_FILE(path)) Trap1(RE_INVALID_SPEC, path);
+                          
+	if (OS_DO_DEVICE(sock, RDC_OPEN)) Trap_Port(RE_CANNOT_OPEN, port, -12);
+	SET_OPEN(sock);
+
+	if (!(ser = Value_To_OS_Path(path, TRUE)))
+		Trap1(RE_BAD_FILE_PATH, path);
+
+	sock->file.path = (REBCHR*)(ser->data);
+}
+
+/***********************************************************************
+**
 */	static int Transport_Actor(REBVAL *ds, REBSER *port, REBCNT action, enum Transport_Types proto)
 /*
 ***********************************************************************/
@@ -113,7 +138,10 @@ enum Transport_Types {
 	//refs = 0;
 
 	sock = Use_Port_State(port, RDI_NET, sizeof(*sock));
-	if (proto == TRANSPORT_UDP) {
+	if (proto == TRANSPORT_UNIX_STREAM) {
+		SET_FLAG(sock->modes, RST_UNIX_STREAM);
+	}
+	else if (proto == TRANSPORT_UDP) {
 		SET_FLAG(sock->modes, RST_UDP);
 	}
 	//Debug_Fmt("Sock: %x", sock);
@@ -132,36 +160,40 @@ enum Transport_Types {
 
 		case A_OPEN:
 
-			arg = Obj_Value(spec, STD_PORT_SPEC_NET_HOST);
-			val = Obj_Value(spec, STD_PORT_SPEC_NET_PORT_ID);
-
-			if (OS_DO_DEVICE(sock, RDC_OPEN)) Trap_Port(RE_CANNOT_OPEN, port, -12);
-			SET_OPEN(sock);
-
-			// Lookup host name (an extra TCP device step):
-			if (IS_STRING(arg)) {
-				sock->data = VAL_BIN(arg);
-				sock->net.remote_port = IS_INTEGER(val) ? VAL_INT32(val) : 80;
-				result = OS_DO_DEVICE(sock, RDC_LOOKUP);  // sets remote_ip field
-				if (result < 0) Trap_Port(RE_NO_CONNECT, port, sock->error);
-				return R_RET;
+			if (proto == TRANSPORT_UNIX_STREAM) {
+				Init_Unix_Addr(sock, spec, port);
 			}
+			else {
+				arg = Obj_Value(spec, STD_PORT_SPEC_NET_HOST);
+				val = Obj_Value(spec, STD_PORT_SPEC_NET_PORT_ID);
 
-			// Host IP specified:
-			else if (IS_TUPLE(arg)) {
-				sock->net.remote_port = IS_INTEGER(val) ? VAL_INT32(val) : 80;
-				memcpy(&sock->net.remote_ip, VAL_TUPLE(arg), 4);
-				break;
-			}
+				if (OS_DO_DEVICE(sock, RDC_OPEN)) Trap_Port(RE_CANNOT_OPEN, port, -12);
+				SET_OPEN(sock);
 
-			// No host, must be a LISTEN socket:
-			else if (IS_NONE(arg)) {
-				SET_FLAG(sock->modes, RST_LISTEN);
-				sock->data = 0; // where ACCEPT requests are queued
-				sock->net.local_port = IS_INTEGER(val) ? VAL_INT32(val) : 8000;
-				break;
+				// Lookup host name (an extra TCP device step):
+				if (IS_STRING(arg)) {
+					sock->data = VAL_BIN(arg);
+					sock->net.remote_port = IS_INTEGER(val) ? VAL_INT32(val) : 80;
+					result = OS_DO_DEVICE(sock, RDC_LOOKUP);  // sets remote_ip field
+					if (result < 0) Trap_Port(RE_NO_CONNECT, port, sock->error);
+					return R_RET;
+				}
+
+				// Host IP specified:
+				else if (IS_TUPLE(arg)) {
+					sock->net.remote_port = IS_INTEGER(val) ? VAL_INT32(val) : 80;
+					memcpy(&sock->net.remote_ip, VAL_TUPLE(arg), 4);
+				}
+
+				// No host, must be a LISTEN socket:
+				else if (IS_NONE(arg)) {
+					SET_FLAG(sock->modes, RST_LISTEN);
+					sock->data = 0; // where ACCEPT requests are queued
+					sock->net.local_port = IS_INTEGER(val) ? VAL_INT32(val) : 8000;
+				}
+				else Trap_Port(RE_INVALID_SPEC, port, -10);
 			}
-			else Trap_Port(RE_INVALID_SPEC, port, -10);
+			break;
 
 		case A_CLOSE:
 			return R_RET;
@@ -325,6 +357,15 @@ enum Transport_Types {
 
 /***********************************************************************
 **
+*/	static int Unix_Stream_Actor(REBVAL *ds, REBSER *port, REBCNT action)
+/*
+***********************************************************************/
+{
+	return Transport_Actor(ds, port, action, TRANSPORT_UNIX_STREAM);
+}
+
+/***********************************************************************
+**
 */	void Init_TCP_Scheme(void)
 /*
 ***********************************************************************/
@@ -338,4 +379,12 @@ enum Transport_Types {
 ***********************************************************************/
 {
 	Register_Scheme(SYM_UDP, 0, UDP_Actor);
+}
+/***********************************************************************
+**
+*/	void Init_Unix_Stream_Scheme(void)
+/*
+***********************************************************************/
+{
+	Register_Scheme(SYM_UNIX_STREAM, 0, Unix_Stream_Actor);
 }

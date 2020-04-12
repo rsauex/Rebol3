@@ -630,6 +630,9 @@ SCHEME_ACTIONS *Scheme_Actions;	// Initial Global (not threaded)
 	Init_Event_Scheme();
 	Init_TCP_Scheme();
 	Init_UDP_Scheme();
+#ifdef USE_UNIX_SOCKET
+	Init_Unix_Stream_Scheme();
+#endif
 	Init_DNS_Scheme();
 	Init_Checksum_Scheme();
 #ifndef MIN_OS

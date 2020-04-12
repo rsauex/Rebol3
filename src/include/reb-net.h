@@ -29,6 +29,7 @@
 // REBOL Socket types:
 enum socket_types {
 	RST_UDP,					// TCP or UDP
+	RST_UNIX_STREAM,			// Unix socket stream
 	RST_LISTEN = 8,				// LISTEN
 	RST_REVERSE,				// DNS reverse
 };

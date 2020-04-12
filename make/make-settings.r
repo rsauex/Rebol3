@@ -16,6 +16,7 @@ Defines: [
 	;USE_NO_INFINITY ;-- use when you don't want to support IEEE infinity
 	USE_LZMA         ;-- adds support for LZMA [de]compression
 	USE_MIDI_DEVICE  ;-- includes MIDI device when possible (Windows & macOS)
+	USE_UNIX_SOCKET  ;-- includes UNIX socket support when possible (Linux, macOS, BSD)
 
 	;INCLUDE_TASK ;-- tasks are not implemented yet, so include it only on demand
 	INCLUDE_BASE85 ;-- adds support for enbase/debase with base 85 (ASCII85)

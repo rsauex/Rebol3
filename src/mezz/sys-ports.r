@@ -289,6 +289,20 @@ init-schemes: func [
 		awake: func [event] [print ['UDP-event event/type] true]
 	]
 
+    make-scheme [
+        title: "Unix Socket Stream"
+        name: 'unix-stream
+        spec: system/standard/port-spec-file
+        info: system/standard/file-info
+        awake: func [event] [print ['Unix-Stream-event event/type] true]
+        init: func [port /local path] [
+			if url? port/spec/ref [
+				parse port/spec/ref [thru #":" 0 2 slash path:]
+				append port/spec compose [path: (to file! path)]
+			]
+		]
+    ]
+
 	make-scheme [
 		title: "Checksum port"
 		info: "Possible methods: MD5, SHA1, SHA256, SHA384, SHA512"

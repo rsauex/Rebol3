@@ -144,6 +144,8 @@ These are now obsolete (as of A107) and should be removed:
 
 #define AGG_WIN32_FONTS //use WIN32 api for font handling
 
+#undef USE_UNIX_SOCKET
+
 #else //end of Windows section
 
 //* Non Windows ********************************************************
@@ -162,6 +164,7 @@ These are now obsolete (as of A107) and should be removed:
 #ifndef TO_HAIKU
 // Unsupported by gcc 2.95.3-haiku-121101
 #define API_EXPORT __attribute__((visibility("default")))
+#undef USE_UNIX_SOCKET
 #else
 #define API_EXPORT
 #define DEF_UINT
@@ -188,6 +191,7 @@ These are now obsolete (as of A107) and should be removed:
 
 #ifdef TO_OSX					// OSX/PPC
 #define OLD_COMPILER
+#undef USE_UNIX_SOCKET
 #endif
 
 #ifdef TO_OBSD					// OpenBSD

@@ -59,6 +59,10 @@ typedef long __LONG;
 #include <netinet/in.h>
 #include <unistd.h>
 
+#ifdef USE_UNIX_SOCKET
+#include <sys/un.h>
+#endif
+
 #define GET_ERROR		errno
 #define IOCTL			ioctl
 #define CLOSE_SOCKET	close

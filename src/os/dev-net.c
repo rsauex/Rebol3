@@ -68,7 +68,7 @@ extern HWND Event_Handle; // For WSAAsync API
 **
 ***********************************************************************/
 
-static void Set_Addr(SOCKAI *sa, long ip, int port)
+static void Set_Inet_Addr(SOCKAI *sa, long ip, int port)
 {
 	// Set the IP address and port number in a socket_addr struct.
 	memset(sa, 0, sizeof(*sa));
@@ -76,6 +76,16 @@ static void Set_Addr(SOCKAI *sa, long ip, int port)
 	sa->sin_addr.s_addr = ip;  //htonl(ip); NOTE: REBOL stays in network byte order
 	sa->sin_port = htons((unsigned short)port);
 }
+
+#ifdef USE_UNIX_SOCKET
+static void Set_Unix_Addr(struct sockaddr_un *sa, REBCHR *path)
+{
+	// Set the IP address and port number in a socket_addr struct.
+	memset(sa, 0, sizeof(*sa));
+	sa->sun_family = AF_UNIX;
+        strcpy(sa->sun_path, path);        
+}
+#endif
 
 static void Get_Local_IP(REBREQ *sock)
 {
@@ -187,6 +197,7 @@ static REBOOL Nonblocking_Mode(SOCKET sock)
 **
 ***********************************************************************/
 {
+	int domain;
 	int type;
 	int	protocol;
 	long result;
@@ -196,16 +207,25 @@ static REBOOL Nonblocking_Mode(SOCKET sock)
 
 	// Setup for correct type and protocol:
 	if (GET_FLAG(sock->modes, RST_UDP)) {
+		domain = AF_INET;
 		type = SOCK_DGRAM;
 		protocol = IPPROTO_UDP;
 	}
+#ifdef USE_UNIX_SOCKET
+	else if (GET_FLAG(sock->modes, RST_UNIX_STREAM)) {
+		domain = AF_UNIX;
+		type = SOCK_STREAM;
+		protocol = 0;
+	}
+#endif
 	else {	// TCP is default
+		domain = AF_INET;
 		type = SOCK_STREAM;
 		protocol = IPPROTO_TCP;
 	}
 
 	// Bind to the transport service, return socket handle or error:
-	result = (int)socket(AF_INET, type, protocol);
+	result = (int)socket(domain, type, protocol);
 
 	// Failed, get error code (os local):
 	if (result == BAD_SOCKET) {
@@ -362,7 +382,6 @@ static REBOOL Nonblocking_Mode(SOCKET sock)
 ***********************************************************************/
 {
 	int result;
-	SOCKAI sa;
 
 	if (GET_FLAG(sock->modes, RST_LISTEN))
 		return Listen_Socket(sock);
@@ -377,8 +396,19 @@ static REBOOL Nonblocking_Mode(SOCKET sock)
 		return DR_DONE; // done
 	}
 
-	Set_Addr(&sa, sock->net.remote_ip, sock->net.remote_port);
-	result = connect(sock->socket, (struct sockaddr *)&sa, sizeof(sa));
+#ifdef USE_UNIX_SOCKET
+	if (GET_FLAG(sock->modes, RST_UNIX_STREAM)) {
+		struct sockaddr_un sa;
+		Set_Unix_Addr(&sa, sock->file.path);
+		result = connect(sock->socket, (struct sockaddr *)&sa, sizeof(sa));  
+	}
+	else
+#endif
+	{
+		SOCKAI sa;
+		Set_Inet_Addr(&sa, sock->net.remote_ip, sock->net.remote_port);
+		result = connect(sock->socket, (struct sockaddr *)&sa, sizeof(sa));
+	}
 
 	if (result != 0) result = GET_ERROR;
 
@@ -468,11 +498,21 @@ static REBOOL Nonblocking_Mode(SOCKET sock)
 #endif
 		//i64 tm = OS_Delta_Time(0, 0);
 
-		Set_Addr(&remote_addr, sock->net.remote_ip, sock->net.remote_port);
-		//WATCH1("sendto data: %x\n", sock->data);
-		result = sendto(sock->socket, sock->data, len, flags,
-						(struct sockaddr*)&remote_addr, addr_len);
-		//printf("sento time: %d\n", OS_Delta_Time(tm,  0));
+#ifdef USE_UNIX_SOCKET
+		if (GET_FLAG(sock->modes, RST_UNIX_STREAM)) {
+			//WATCH1("send data: %x\n", sock->data);
+			result = send(sock->socket, sock->data, len, flags);
+			//printf("send time: %d\n", OS_Delta_Time(tm,  0));	
+		}
+		else
+#endif
+		{
+			Set_Inet_Addr(&remote_addr, sock->net.remote_ip, sock->net.remote_port);
+			//WATCH1("sendto data: %x\n", sock->data);
+			result = sendto(sock->socket, sock->data, len, flags,
+							(struct sockaddr*)&remote_addr, addr_len);
+			//printf("sento time: %d\n", OS_Delta_Time(tm,  0));
+		}
 		//WATCH2("send() len: %d actual: %d\n", len, result);
 
 		if (result >= 0) {
@@ -488,8 +528,16 @@ static REBOOL Nonblocking_Mode(SOCKET sock)
 		// if (result < 0) ...
 	}
 	else {
-		result = recvfrom(sock->socket, sock->data, len, 0,
-						  (struct sockaddr*)&remote_addr, &addr_len);
+#ifdef USE_UNIX_SOCKET
+		if (GET_FLAG(sock->modes, RST_UNIX_STREAM)) {
+			result = recv(sock->socket, sock->data, len, 0);
+		}
+		else
+#endif
+		{
+			result = recvfrom(sock->socket, sock->data, len, 0,
+							  (struct sockaddr*)&remote_addr, &addr_len);
+		}
 		WATCH2("recv() len: %d result: %d\n", len, result);
 
 		if (result > 0) {
@@ -544,7 +592,7 @@ static REBOOL Nonblocking_Mode(SOCKET sock)
 	SOCKAI sa;
 
 	// Setup socket address range and port:
-	Set_Addr(&sa, INADDR_ANY, sock->net.local_port);
+	Set_Inet_Addr(&sa, INADDR_ANY, sock->net.local_port);
 
 	// Allow listen socket reuse:
 	result = setsockopt(sock->socket, SOL_SOCKET, SO_REUSEADDR, (char*)(&len), sizeof(len));

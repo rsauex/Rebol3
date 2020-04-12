@@ -182,6 +182,7 @@ callback
 dns
 tcp
 udp
+unix-stream
 clipboard
 
 ; Gobs:
